@@ -27,12 +27,37 @@
  *   // 240 + 180 = 420, next song 300 would make 720 > 600, so stop
  *
  *   buildPlaylist([100, -50, 200, 150], 400)
- *   // => { count: 3, totalDuration: 450 }
- *   // Wait, 100 + 200 + 150 = 450 > 400? Let me recalculate...
+ *   // => { count: 2, totalDuration: 300 }
  *   // 100 added (total=100), skip -50, 200 added (total=300),
  *   // 150: 300+150=450 > 400, STOP.
- *   // => { count: 2, totalDuration: 300 }
  */
 export function buildPlaylist(songs, maxDuration) {
-  // Your code here
+  const empty = { count: 0, totalDuration: 0 };
+
+  if (!Array.isArray(songs)) return empty;
+  if (typeof maxDuration !== 'number' || maxDuration <= 0 || !isFinite(maxDuration)) return empty;
+
+  let count = 0;
+  let totalDuration = 0;
+  let i = 0;
+
+  while (i < songs.length) {
+    const duration = songs[i];
+    i++;
+
+    // Skip invalid durations
+    if (typeof duration !== 'number' || duration <= 0 || !isFinite(duration)) {
+      continue;
+    }
+
+    // Check if adding this song would exceed maxDuration
+    if (totalDuration + duration > maxDuration) {
+      break; // STOP
+    }
+
+    totalDuration += duration;
+    count++;
+  }
+
+  return { count, totalDuration };
 }
